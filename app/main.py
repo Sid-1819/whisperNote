@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.core.database import Base, engine
-from app.routes import router
+from app.routes.note import router as note_router
 from fastapi_utils.tasks import repeat_every
 from datetime import datetime
 from app.core.database import SessionLocal
@@ -12,7 +12,7 @@ app = FastAPI(title="WhisperNote")
 Base.metadata.create_all(bind=engine)
 
 # Register routes
-app.include_router(router)
+app.include_router(note_router)
 
 @app.get("/")
 def root():

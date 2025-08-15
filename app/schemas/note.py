@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from datetime import datetime
+from pydantic import BaseModel, validator
+from datetime import datetime, timezone
 
 class NoteCreate(BaseModel):
     content: str
@@ -11,3 +11,9 @@ class NoteOut(BaseModel):
 
     class Config:
         orm_mode = True
+
+    @validator("expiry_time", pre=True)
+    def ensure_timezone(cls, value):
+        if value.tzinfo is None:
+            return value.replace(tzinfo=timezone.utc)
+        return value

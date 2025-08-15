@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# Environment variables
+*.env
+.env.*
+
+# Byte-compiled / optimized / DLL files
+*.egg-info/
+dist/
+build/
+
+# Logs
+*.log
+
+# Database
+*.sqlite3
+*.db
+
+# Alembic migrations cache
+migrations/__pycache__/
+migrations/versions/__pycache__/
+
+# IDE / editor settings
+.vscode/
+.idea/
+
+# Mac / Linux / Windows system files
+.DS_Store
+Thumbs.db
