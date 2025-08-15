@@ -6,10 +6,11 @@ from app.models.note import Note
 from app.schemas.note import NoteCreate, NoteOut
 from app.utils.encryption import encrypt_text, decrypt_text
 from app.core.logging_config import logger
+from app.core.security import verify_api_key
 
 router = APIRouter(prefix="/notes", tags=["notes"])
 
-@router.post("/", response_model=NoteOut)
+@router.post("/", response_model=NoteOut, dependencies=[Depends(verify_api_key)])
 def create_note(note: NoteCreate, db: Session = Depends(get_db)):
     logger.info(f"Creating note with expiry {note.expire_after_minutes} minutes")
     encrypted_content = encrypt_text(note.content)
@@ -22,7 +23,7 @@ def create_note(note: NoteCreate, db: Session = Depends(get_db)):
 
     return db_note
 
-@router.get("/{note_id}")
+@router.get("/{note_id}", dependencies=[Depends(verify_api_key)])
 def read_note(note_id: int, db: Session = Depends(get_db)):
     db_note = db.query(Note).filter(Note.id == note_id).first()
     if not db_note:

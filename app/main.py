@@ -8,7 +8,9 @@ from datetime import datetime
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.models.note import Note
+from app.core.logging_config import setup_logging
 
+setup_logging()
 app = FastAPI(title=settings.PROJECT_NAME)
 
 # Create tables

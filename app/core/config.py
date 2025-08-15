@@ -5,6 +5,8 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str = "supersecret"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
+    API_KEY: str  # <- Add this line
+
 
     class Config:
         env_file = ".env"
