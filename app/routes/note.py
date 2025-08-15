@@ -5,11 +5,13 @@ from app.core.database import get_db
 from app.models.note import Note
 from app.schemas.note import NoteCreate, NoteOut
 from app.utils.encryption import encrypt_text, decrypt_text
+from app.core.logging_config import logger
 
 router = APIRouter(prefix="/notes", tags=["notes"])
 
 @router.post("/", response_model=NoteOut)
 def create_note(note: NoteCreate, db: Session = Depends(get_db)):
+    logger.info(f"Creating note with expiry {note.expire_after_minutes} minutes")
     encrypted_content = encrypt_text(note.content)
     expiry_time = datetime.now(timezone.utc) + timedelta(minutes=note.expire_after_minutes)
 
