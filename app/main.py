@@ -10,11 +10,19 @@ from app.core.config import settings
 from app.core.database import SessionLocal
 from app.models.note import Note
 from app.core.logging_config import setup_logging
+from app.core.metrics import REQUEST_COUNT, start_metrics_server
 import threading
 import time
 
 setup_logging()
 app = FastAPI(title=settings.PROJECT_NAME)
+start_metrics_server(8001)
+
+@app.middleware("http")
+async def metrics_middleware(request: Request, call_next):
+    response = await call_next(request)
+    REQUEST_COUNT.labels(endpoint=request.url.path, method=request.method).inc()
+    return response
 
 def start_cleanup_task():
     def task():

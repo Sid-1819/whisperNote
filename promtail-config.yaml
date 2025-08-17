@@ -1,0 +1,18 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml  # remembers where it left off in a log file
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push  # Loki endpoint
+
+scrape_configs:
+  - job_name: whispernote-logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: whispernote
+          __path__: /var/log/whispernote/*.log
