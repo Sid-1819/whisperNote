@@ -4,14 +4,29 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.database import Base, engine
 from app.routes.note import router as note_router
 from fastapi_utils.tasks import repeat_every
+from app.utils.cleanup import delete_expired_notes
 from datetime import datetime
 from app.core.config import settings
 from app.core.database import SessionLocal
 from app.models.note import Note
 from app.core.logging_config import setup_logging
+import threading
+import time
 
 setup_logging()
 app = FastAPI(title=settings.PROJECT_NAME)
+
+def start_cleanup_task():
+    def task():
+        while True:
+            try:
+                db = SessionLocal()
+                delete_expired_notes(db)
+            finally:
+                db.close()
+            time.sleep(60)  # run every 60 seconds
+    thread = threading.Thread(target=task, daemon=True)
+    thread.start()
 
 # Create tables
 Base.metadata.create_all(bind=engine)
