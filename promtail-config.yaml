@@ -3,16 +3,16 @@ server:
   grpc_listen_port: 0
 
 positions:
-  filename: /tmp/positions.yaml  # remembers where it left off in a log file
+  filename: /tmp/positions.yaml
 
 clients:
-  - url: http://localhost:3100/loki/api/v1/push  # Loki endpoint
+  - url: http://loki:3100/loki/api/v1/push
 
 scrape_configs:
-  - job_name: whispernote-logs
-    static_configs:
-      - targets:
-          - localhost
-        labels:
-          job: whispernote
-          __path__: /var/log/whispernote/*.log
+  - job_name: docker
+    docker_sd_configs:
+      - host: unix:///var/run/docker.sock
+    relabel_configs:
+      - source_labels: ['__meta_docker_container_name']
+        regex: '/(.*)'
+        target_label: 'container'
